@@ -1,0 +1,78 @@
+<html>
+<head>
+<style>
+#star-five {
+    margin: 50px 0;
+    position: relative;
+    display: block;
+    color: green;
+    width: 0px;
+    height: 0px;
+    border-right: 100px solid transparent;
+    border-bottom: 70px solid green;
+    border-left: 100px solid transparent;
+    transform: rotate(35deg);
+}
+
+#star-five:before {
+    border-right: 30px solid transparent;
+    border-bottom: 80px solid green;
+    border-left: 30px solid transparent;
+    border-right: 100px solid transparent;
+    border-bottom: 70px solid green;
+    border-left: 100px solid transparent;
+    transform: rotate(70deg);
+}
+
+}
+#div1 {
+    background-color: black;
+    width: 200px;
+    height: 150px;
+    position: relative;
+    left: 0px;
+    top: 0px;
+    z-index: 2;
+}
+
+#div2 {
+    background-color: pink;
+    width: 200px;
+    height:150px;
+    position: relative;
+    left: 100px;
+    top: -50px;
+    margin: 10px 0px 0px 50px;
+    z-index: 3;
+}
+
+#div3 {
+    position: absolute;
+    left: 230px;
+    top: 430px;
+    transform: scale(3.0);
+}
+
+#div4 {
+    position: absolute;
+    left: 330px;
+    top: 420px;
+    transform: scale(3.0);
+}
+
+#div5 {
+    position: absolute;
+    left: 320px;
+    top: 420px;
+    transform: scale(3.0);
+}
+</style>
+</head>
+<body>
+<h1>Title</h1>
+<div id="div1"></div>
+<div id="div2"></div>
+<div id="div3"></div>
+<div id="star-five"></div>
+</body>
+</html>
