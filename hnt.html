@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tower of Hanoi</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  .tower {
+    display: inline-block;
+    margin: 0 50px;
+    width: 20px;
+    height: 200px;
+    background-color: #333;
+    position: relative;
+  }
+  .disk {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 20px;
+    background-color: #f00;
+    border-radius: 10px;
+    transition: left 1s;
+  }
+</style>
+</head>
+<body>
+<select id="diskNumber">
+  <option value="3">3 Disks</option>
+  <option value="4">4 Disks</option>
+  <option value="5">5 Disks</option>
+</select>
+<button onclick="startGame()">Start</button>
+<button onclick="pauseGame()">Pause</button>
+<button onclick="resumeGame()">Resume</button>
+<select id="speed">
+  <option value="1000">Slow</option>
+  <option value="500">Normal</option>
+  <option value="200">Fast</option>
+</select>
+
+<div class="tower" id="towerA"></div>
+<div class="tower" id="towerB"></div>
+<div class="tower" id="towerC"></div>
+
+<script>
+  let disks = [];
+  let moveStack = [];
+  let isMoving = false;
+  let speed = 500;
+
+  function startGame() {
+    const diskNumber = parseInt(document.getElementById('diskNumber').value);
+    disks = Array.from({ length: diskNumber }, (_, i) => i + 1).reverse();
+    moveStack = [];
+    isMoving = false;
+    speed = parseInt(document.getElementById('speed').value);
+    renderDisks();
+    document.querySelectorAll('.disk').forEach(disk => {
+      disk.addEventListener('click', moveDisk);
+    });
+  }
+
+  function renderDisks() {
+    const towers = ['A', 'B', 'C'];
+    towers.forEach(tower => {
+      const towerElement = document.getElementById(`tower${tower}`);
+      while (towerElement.firstChild) {
+        towerElement.removeChild(towerElement.lastChild);
+      }
+      disks.forEach((disk, index) => {
+        const diskElement = document.createElement('div');
+        diskElement.className = 'disk';
+        diskElement.style.width = `${80 + disk * 20}px`;
+        diskElement.style.bottom = `${index * 20}px`;
+        towerElement.appendChild(diskElement);
+      });
+    });
+  }
+
+  function moveDisk(event) {
+    if (isMoving) return;
+    const sourceTower = event.currentTarget.parentElement.id.slice(-1);
+    const destinationTower = moveStack.length === 0 ? getNextTower(sourceTower) : moveStack.pop();
+    const disk = disks.pop();
+    if (isValidMove(sourceTower, destinationTower)) {
+      isMoving = true;
+      animateDisk(sourceTower, destinationTower, disk);
+    } else {
+      disks.push(disk);
+    }
+  }
+
+  function isValidMove(source, destination) {
+    if (moveStack.length === 0) return true;
+    return moveStack[moveStack.length - 1] === source && destination !== moveStack[moveStack.length - 2];
+  }
+
+  function getNextTower(tower) {
+    return ['A', 'B', 'C'].filter(t => ![tower, moveStack[moveStack.length - 1]].includes(t))[0];
+  }
+
+  function animateDisk(source, destination, disk) {
+    const sourceTower = document.getElementById(`tower${source}`);
+    const destinationTower = document.getElementById(`tower${destination}`);
+    const diskElement = sourceTower.lastChild;
+    const sourceRect = sourceTower.getBoundingClientRect();
+    const destinationRect = destinationTower.getBoundingClientRect();
+    const dx = destinationRect.left - sourceRect.left;
+    const dy = destinationRect.top - sourceRect.top;
+
+    const keyframes = [
+      { transform: 'translate(0, 0)' },
+      { transform: `translate(${dx}px, ${dy}px)` },
+      { transform: `translate(${dx}px, ${dy}px) translateY(-${destinationTower.childElementCount * 20}px)` }
+    ];
+
+    const options = {
+      duration: speed,
+      iterations: 1,
+      fill: 'forwards'
+    };
+
+    diskElement.animate(keyframes, options).onfinish = () => {
+      destinationTower.appendChild(diskElement);
+      moveStack.push(source);
+      moveStack.push(destination);
+      isMoving = false;
+    };
+  }
+
+  function pauseGame() {
+    document.querySelectorAll('.disk').forEach(disk => {
+      disk.style.animationPlayState = 'paused';
+    });
+  }
+
+  function resumeGame() {
+    document.querySelectorAll('.disk').forEach(disk => {
+      disk.style.animationPlayState = 'running';
+    });
+  }
+</script>
+</body>
+</html>
