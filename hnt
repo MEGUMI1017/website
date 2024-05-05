@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>汉诺塔游戏</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+  }
+  .container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 100vh;
+  }
+  .pillar {
+    width: 10px;
+    height: 200px;
+    background-color: black;
+    position: relative;
+  }
+  .disk {
+    width: 100px;
+    height: 20px;
+    background-color: blue;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="pillar"></div>
+  <div class="pillar"></div>
+  <div class="pillar"></div>
+</div>
+
+<script>
+  const container = document.querySelector('.container');
+  const pillars = document.querySelectorAll('.pillar');
+
+  function createDisk(size) {
+    const disk = document.createElement('div');
+    disk.classList.add('disk');
+    disk.style.width = `${size * 20}px`;
+    return disk;
+  }
+
+  function initializeGame(numberOfDisks) {
+    const disks = [];
+    for (let i = numberOfDisks; i > 0; i--) {
+      disks.push(createDisk(i));
+    }
+    disks.forEach((disk, index) => {
+      pillars[0].appendChild(disk);
+      disk.style.bottom = `${index * 20}px`;
+    });
+  }
+
+  initializeGame(3); // Change the number of disks here
+
+  // Implement the game logic here
+
+</script>
+
+</body>
+</html>
